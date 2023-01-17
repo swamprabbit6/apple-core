@@ -5,10 +5,10 @@ var secondsLeft = 60;
 var startScreen = document.getElementById("startScreen")
 var questionsDiv = document.getElementById("questionsDiv")
 var finalScreen = document.getElementById("finalScreen")
-var quesetionIndex = 0
+var questionIndex = 0
 var questionTitle = document.getElementById("questionTitle")
 var answerChoices = document.getElementById("answerChoices")
-
+var currentQuestion = document.getElementById("currentQuestion")
 // Set the button text to 'Begin Quiz'
 button.innerText = 'Begin Quiz'
 
@@ -43,7 +43,7 @@ function timerEl() {
 }
 // Message to appear when time has run out
 function sendMessage() {
-  time.textContent = "Time is out";
+  time.textContent = "Time is out. You got " + score + " out of 4 questions correct!";
 }
 
 // create questions
@@ -59,7 +59,7 @@ var questions = [
 console.log (questions)
 
 function showQuestions() {
-  var currentQuestion = questions[quesetionIndex]
+  const currentQuestion = questions[questionIndex]
   // display question title depending on current question index
   questionTitle.textContent= currentQuestion.title
   // for each choice in our current index choices array, render a button with a text value of itself and then evaluate against correct answer, append to answer choices id.
@@ -69,10 +69,32 @@ function showQuestions() {
     choiceBTN.setAttribute("value", choice)
     // choiceBTN.setAttribute class for styling
     answerChoices.append(choiceBTN)
+    choiceBTN.addEventListener("click", checkAnswer)
   })
 }
- // Organize HTML into hideable pieces. Bring variables for those divs into javascript.
- // create display question function that renders question title to our question class in HTML (ln 25) run a for loop or for each on specific question indexes answer array to create buttons that reflect the value of the answer choice and display that on screen.
- //Once title and buttons are created, create functions that eveluates button value against correct answer choice for the current answer index.
 
- //check answer function will be applied on line 69 as onclick onto each button that is created that compares this.value that is reffering to the value of the button that you are clicking on since you are attaching it to each button that is created. To compare it to the current question indexes answer key. Increment question index global variable by 1, run show questions function again. When we reach the end of our questions array, hide questions div and then unhide end screen div.
+var score = 0
+function checkAnswer(event) {
+  var selectedAnswer = event.target.value
+  if (selectedAnswer === questions[questionIndex].answer) {
+    console.log("Correct!")
+    score++
+  } else {
+    console.log("Incorrect")
+    secondsLeft = secondsLeft - 10
+    console.log(secondsLeft)
+  }
+  questionIndex++;
+  if (questionIndex < questions.length) {
+    // if there are more questions, show the next question
+    answerChoices.innerHTML = "";
+    showQuestions();
+  } else {
+    answerChoices.innerHTML = "";
+    questionsDiv.innerHTML = "";
+    secondsLeft = 1
+    // End the game
+    finalScreen.setAttribute("class", "hide")
+  }
+    return;
+  }
